@@ -6,14 +6,51 @@ import { useState } from "react";
 import { TeamBadge } from "@/components/brand";
 import { ArrowRight } from "@/components/icons";
 import {
+  club,
   type Fixture,
   leagueTable,
   matches,
   type TeamKey,
   teamTabs,
 } from "@/lib/content";
+import {
+  formatFixtureDateFull,
+  opponentTone,
+  type SeasonFixture,
+  season,
+} from "@/lib/fixtures";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+type LabelledFixture = { label: string; fixture: Fixture };
+
+/**
+ * Real league fixtures carry only the opponent, so the club side is filled in
+ * here. Home team first, matching how the fixture list reads.
+ */
+function toCard(fixture: SeasonFixture): Fixture {
+  const us = { name: "Bendel Insurance", tone: 0 };
+  const them = {
+    name: fixture.opponent,
+    tone: opponentTone(fixture.opponent),
+  };
+  const [home, away] = fixture.isHome ? [us, them] : [them, us];
+
+  const venue = fixture.isHome
+    ? `${club.stadium}, ${club.city}`
+    : fixture.venue === "TBA"
+      ? "Venue to be confirmed"
+      : fixture.venue;
+
+  return {
+    competition: season.shortCompetition,
+    date: formatFixtureDateFull(fixture.date),
+    venue,
+    home,
+    away,
+    kickoff: fixture.kickoff,
+  };
+}
 
 function TeamColumn({ team }: { team: Fixture["home"] }) {
   return (
@@ -158,9 +195,29 @@ function LeagueTable() {
   );
 }
 
-export function Matches() {
+/**
+ * `firstTeam` comes from the live fixture list, resolved on the server so the
+ * "last vs next" split does not depend on the visitor's clock. The feeder and
+ * academy sides have no feed yet, so those tabs stay on sample data.
+ */
+export function Matches({
+  firstTeam,
+}: {
+  firstTeam: { label: string; fixture: SeasonFixture }[];
+}) {
   const [team, setTeam] = useState<TeamKey>("first");
-  const fixtures = matches[team];
+
+  const cards: LabelledFixture[] =
+    team === "first"
+      ? firstTeam.map(({ label, fixture }) => ({
+          label,
+          fixture: toCard(fixture),
+        }))
+      : [
+          { label: "Last match", fixture: matches[team].last },
+          { label: "Next match", fixture: matches[team].next },
+          { label: "Upcoming match", fixture: matches[team].upcoming },
+        ];
 
   return (
     <div>
@@ -203,11 +260,22 @@ export function Matches() {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4, ease: EASE }}
         >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <FixtureCard fixture={fixtures.last} label="Last match" />
-            <FixtureCard fixture={fixtures.next} label="Next match" />
-            <FixtureCard fixture={fixtures.upcoming} label="Upcoming match" />
-          </div>
+          {cards.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {cards.map((card) => (
+                <FixtureCard
+                  key={`${card.label}-${card.fixture.date}`}
+                  fixture={card.fixture}
+                  label={card.label}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-card bg-smoke p-6 text-sm text-steel">
+              The season is complete. Next season&rsquo;s fixtures will appear
+              here once the {season.shortCompetition} publishes them.
+            </p>
+          )}
 
           <div className="mt-8">
             <LeagueTable />

@@ -17,13 +17,23 @@ import {
   newsStories,
   ticketPromos,
 } from "@/lib/content";
+import { selectFixtureStrip } from "@/lib/fixtures";
+import { getFixtures } from "@/lib/fixtures-server";
 import { getHeroSlides, getSiteSettings } from "@/lib/site-content-server";
+
+/* The match strip depends on today's date, so refresh hourly. */
+export const revalidate = 3600;
 
 const SHELL = "mx-auto w-full max-w-[1440px] px-4 md:px-8";
 
 export default async function Home() {
   const slides = await getHeroSlides();
   const settings = await getSiteSettings();
+  const fixtures = await getFixtures();
+  const firstTeamStrip = selectFixtureStrip(
+    fixtures,
+    new Date().toISOString().slice(0, 10),
+  );
 
   const customKitPromos = kitPromos.map((p) => {
     if (p.slug === "home-kit" && settings.homeKitImage)
@@ -40,7 +50,8 @@ export default async function Home() {
   });
 
   const customMembershipPromos = membershipPromos.map((p) => {
-    if (settings.membershipImage) return { ...p, image: settings.membershipImage };
+    if (settings.membershipImage)
+      return { ...p, image: settings.membershipImage };
     return p;
   });
 
@@ -72,11 +83,11 @@ export default async function Home() {
           <SectionHeader
             title="Matches"
             subtitle={`${club.league} · ${club.stadium}`}
-            actionLabel="Fixtures"
-            actionHref="/matches/fixtures"
+            actionLabel="All fixtures"
+            actionHref="/fixtures"
           />
           <Reveal delay={0.05}>
-            <Matches />
+            <Matches firstTeam={firstTeamStrip} />
           </Reveal>
         </div>
       </section>
@@ -163,7 +174,7 @@ export default async function Home() {
             title="Since 1972"
             subtitle="Founding members of the Nigerian league, originally the Vipers of Benin"
             actionLabel="Club history"
-            actionHref="/club/history"
+            actionHref="/history"
             dark
           />
           <Reveal delay={0.05}>

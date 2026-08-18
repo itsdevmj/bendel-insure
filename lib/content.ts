@@ -897,7 +897,7 @@ export const primaryNav = [
   },
   {
     label: "Matches",
-    href: "/matches",
+    href: "/fixtures",
   },
   {
     label: "Teams",
@@ -916,8 +916,8 @@ export const primaryNav = [
     href: "/store",
   },
   {
-    label: "Club",
-    href: "/club",
+    label: "History",
+    href: "/history",
   },
 ];
 
@@ -927,7 +927,7 @@ export const primaryNav = [
 export const utilityNav = [
   {
     label: "Fixtures",
-    href: "/matches/fixtures",
+    href: "/fixtures",
   },
   {
     label: "Table",
@@ -939,7 +939,7 @@ export const utilityNav = [
   },
   {
     label: "History",
-    href: "/club/history",
+    href: "/history",
   },
   {
     label: "Help",
@@ -960,7 +960,7 @@ export const footerColumns = [
       },
       {
         label: "History",
-        href: "/club/history",
+        href: "/history",
       },
       {
         label: "The Ogbemudia",
@@ -982,7 +982,7 @@ export const footerColumns = [
     links: [
       {
         label: "Fixtures",
-        href: "/matches/fixtures",
+        href: "/fixtures",
       },
       {
         label: "Results",

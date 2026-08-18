@@ -361,6 +361,33 @@ export function Photo({ className = base }: IconProps) {
   );
 }
 
+export function Calendar({ className = base }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="3.5"
+        y="5"
+        width="17"
+        height="15"
+        rx="2.5"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="M3.5 10h17M8 3.5V6m8-2.5V6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function Settings({ className = base }: IconProps) {
   return (
     <svg

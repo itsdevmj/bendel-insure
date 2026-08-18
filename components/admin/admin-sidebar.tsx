@@ -7,12 +7,12 @@ import { useState } from "react";
 import { logoutAction } from "@/app/admin/(auth)/login/actions";
 import { Crest } from "@/components/brand";
 import {
+  Calendar,
   Close,
   Eye,
   FileText,
   Logout,
   Menu,
-  Photo,
   Settings,
 } from "@/components/icons";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
@@ -26,6 +26,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  */
 const NAV = [
   { label: "Posts", href: "/admin/posts", icon: FileText, ready: true },
+  { label: "Fixtures", href: "/admin/fixtures", icon: Calendar, ready: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, ready: true },
 ];
 
